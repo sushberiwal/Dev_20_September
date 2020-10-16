@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="menu-container">
+        <div class="file">File</div>
+        <div class="home">Home</div>
+    </div>
+    <div class="menu-options-container">
+        <div class="file-menu-options active">
+            <div class="new">New</div>
+            <div class="open">Open</div>
+            <div class="save">Save</div>
+        </div>
+        <div class="home-menu-options">
+            <div class="font-styles">
+                <div class="font">
+                    <select name="font-style" id="font">
+                        <option value="">A</option>
+                        <option value="">B</option>
+                        <option value="">C</option>
+                        <option value="">D</option>
+                    </select>
+                </div>
+                <div class="font-bold">
+                    <div class="bold">B</div>
+                    <div class="underline">U</div>
+                    <div class="italic">I</div>
+                </div>
+            </div>
+            <div class="font-size">
+                <div class="font-sizea">
+                   <input type="range" id="font-size" min="10" max="40" value="16">
+                </div>
+                <div class="font-color">
+                    <input type="color" id="cell-text-color">
+                    <input type="color" id="cell-color">
+                </div>
+            </div>
+            <div class="font-alignment">
+                <div class="left">L</div>
+                <div class="center">C</div>
+                <div class="right">R</div>
+            </div>
+        </div>
+    </div>
+    <div class="formula-tab">
+        Formula
+        <input type="text" id="address" disabled>
+        <input type="text" id="formula">
+    </div>
+    <div class="content">
+        <div class="top-left-cell"></div>
+        <div class="top-row">
+            <% for(let j=0 ; j<26 ; j++) {%>
+                <div class="top-row-cell" cellId=<%=j%>> <%= String.fromCharCode(65+j) %> </div>
+                <%}%>
+        </div>
+        <div class="left-col">
+            <% for(let j=0 ; j<100 ; j++) {%>
+                <div class="left-col-cell" cellId=<%=j%>> <%= j+1%></div>
+                <%}%>
+        </div>
+        <div class="cells">
+            <% for(let i=0 ; i<100 ; i++){ %>
+                <div class="row">
+                <% for(let j=0 ; j<26 ; j++) {%>
+                    <div class="cell" contentEditable="true" rId =<%= i%> cId =<%= j%>></div>
+                    <%}%>
+                </div>   
+            <%}%>
+        </div>
+    </div>
+    
+
+    <div class="sheets"></div>
+    <script src="./script.js"></script>
+</body>
+</html>
+
+

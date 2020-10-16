@@ -1,0 +1,170 @@
+/* ? */
+*{
+    box-sizing: border-box;
+}
+
+html,body{
+    margin:0px;
+    padding:0px
+}
+
+.menu-container{
+    /* border: 1px solid blue;  */
+    height: 30px;
+    display: flex;
+    justify-content: space-around;
+    width: 130px;
+    align-items: center;
+}
+
+.menu-options-container{
+    border: 1px solid;
+    height: 50px;
+    display: flex;
+    /* justify-content: space-evenly; */
+}
+
+.file{
+
+}
+.home{
+
+}
+
+.file-menu-options{
+    display: none;
+    /* border: 1px solid; */
+    width: 184px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.home-menu-options{
+    align-items: center;
+    display: none;
+    /* border: 1px solid; */
+    width: 500px;
+    justify-content: space-around;
+}
+
+.active{
+display: flex;
+}
+
+.formula-tab{
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+
+.cells{
+    z-index: 0;
+    position: absolute;
+    top: 22px;
+    left: 30px;
+}
+
+.sheets{
+    border: 1px solid;
+    height: 30px
+}
+
+.row{
+    display: flex;
+}
+.cell{
+    border: 1px solid;
+    min-width: 60px;
+    text-align: center;
+    min-height: 23px;
+    max-width: 60px;
+    background: lightgreen;
+}
+.content{
+    height: calc(100vh - 140px);
+    overflow: auto;
+    position: relative;
+
+}
+
+.top-left-cell{
+    background: lightgray;
+    height: 22px;
+    width: 30px;
+    z-index: 3;
+    position: absolute;
+}
+
+.top-row{
+    display: flex;
+    position: absolute;
+    left: 30px;
+    z-index: 2;
+    top: 0px;
+    background: white;
+}
+
+.top-row-cell{
+    border: 1px solid;
+    min-width: 60px;
+    text-align: center;
+    min-height: 23px;
+}
+
+.left-col{
+    position: absolute;
+    top: 22px;
+    background: white;
+    z-index: 2;
+    left: -1px;
+}
+.left-col-cell{
+    height: 23px;
+    width: 31px;
+    border: 1px solid;
+    text-align: center;
+}
+
+.font-styles{
+
+}
+.font{
+
+}
+
+#font{
+    width:100%;
+}
+
+#font-size{
+    width:100%;   
+}
+
+.font-bold{
+    display: flex;
+}
+.font-bold div{
+    border: 1px solid;
+    width: 40px;
+    text-align: center;
+    height: 23px;
+}
+.font-size{
+
+}
+.font-sizea{
+
+}
+.font-color{
+
+}
+.font-alignment{
+    display: flex;
+}
+.font-alignment div{
+    border: 1px solid;
+    width: 40px;
+    text-align: center;
+    height: 23px;
+}

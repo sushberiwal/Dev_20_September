@@ -1,0 +1,18 @@
+*{
+    box-sizing: border-box;
+}
+
+html,body{
+    padding:0px;
+    margin:0px;
+}
+
+.tools{
+    height: 80px;
+    background: antiquewhite;
+}
+
+.drawing-area{
+    height: calc(100vh - 100px);
+    /* border: 1px solid; */
+}

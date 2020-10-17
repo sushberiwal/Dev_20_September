@@ -7,11 +7,46 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="tools"></div>
+    <div class="tools">
+        <div class="toolbar">
+            <div class="tool">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/Black_Pencil.svg" alt="">
+                </div>
+            </div>
+            <div class="tool">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/Eraser.svg" alt="">
+                </div>
+            </div>
+            <div class="tool">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/StickyNote.svg" alt="">
+                </div>
+            </div>
+            <div class="tool">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/Photo.svg" alt="">
+                </div>
+            </div>
+            <div class="tool" id="undo">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/Undo.svg" alt="">
+                </div>
+            </div>
+            <div class="tool">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/Redo.svg" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div class="drawing-area">
         <canvas id="canvas"></canvas>
     </div>
-    <script src="./script.js"></script>
+    <!-- variable declared in script.js can be used in tools.js -->
+    <script src="./script.js"></script> 
+    <script src="./tools.js"></script>
 </body>
 </html>

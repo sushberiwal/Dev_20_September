@@ -3,6 +3,12 @@
     box-sizing: border-box;
 }
 
+:root{
+    --theme-green:#217346;
+    --theme-gray:lightgray;
+    --theme-text:#5e5e5e;
+}
+
 html,body{
     margin:0px;
     padding:0px
@@ -66,10 +72,41 @@ display: flex;
 }
 
 .sheets{
-    border: 1px solid;
-    height: 30px
+    height: 30px;
+    display: flex;
+}
+ul.sheets-nav {
+    display: flex;
+    list-style: none;
+    position: relative;
+    padding: 0px;
+    margin: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+li.sheets-item {
+    background: white;
+    color: var(--theme-green);
+    padding: 7px;
+    border: 1px solid var(--theme-green);
+    margin-left: 5px;
 }
 
+.active-sheet{
+    background: var(--theme-green) !important;
+    color: white !important;
+}
+button.add-sheets {
+    font-size: 20px;
+    border: 1px solid var(--theme-green);
+    border-radius: 20px;
+    color: var(--theme-green);
+    height: 30px;
+}
+button.add-sheets:hover{
+    color:white;
+    background: var(--theme-green); 
+}
 .row{
     display: flex;
 }

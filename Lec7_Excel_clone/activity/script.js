@@ -4,10 +4,76 @@ let dialog = require("electron").remote.dialog;
 let fs = require("fs");
 
 $(document).ready(function () {
-//   let allSheets = [];
+  let allSheets = [];
+
   let db;
-//   let currentDb;
   let lsc;
+  let sheetNumber = 1;
+
+  
+  // sheets add
+  $(".add-sheets").on("click" , function(){
+    
+    console.log("clicked on add sheets !");
+    sheetNumber++;
+    let li = document.createElement("li");
+    li.classList.add("sheets-item");
+    li.setAttribute("id" , sheetNumber);
+    li.innerHTML = `Sheet${sheetNumber}`;
+    $(".sheets-nav").append(li);
+    
+    init();
+    
+    $(li).on("click" , function(){
+      let id = $(this).attr("id");
+      console.log(id);
+      db = allSheets[id-1];
+      console.log(db);
+      initializeDBandUI();
+    })
+    // add new db to allSheets;
+  })
+
+  $(".sheets-item").on("click" , function(){
+    let id = $(this).attr("id");
+    console.log(id);
+    db = allSheets[id-1];
+    console.log(db);
+    initializeDBandUI();
+  })
+
+  function initializeDBandUI(){
+    for (let i = 0; i < 100; i++) {
+      for (let j = 0; j < 26; j++) {
+        let cellObject = db[i][j];
+        $(`.cell[rid = '${i}'][cid='${j}']`).text(cellObject.value);
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "font-style",
+          cellObject.fontStyle.italic ? "italic" : "normal"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "font-weight",
+          cellObject.fontStyle.bold ? "bold" : "normal"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "text-decoration",
+          cellObject.fontStyle.underline ? "underline" : "none"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "font-size",
+          cellObject.fontSize + "px"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "color",
+          cellObject.cellTextColor
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "background",
+          cellObject.cellBackground
+        );
+      }
+    }
+  }
 
   $(".file").on("click", function () {
     // remove active class from home menu options
@@ -27,16 +93,8 @@ $(document).ready(function () {
 
   $(".new").on("click", function () {
     // initialize empty db
-    db = [];
-    // db=[
-    //     [{} , {} , {} , {} ,{}] ,
-    //     [{} , {} , {} , {} ,{}] ,
-    //     [{} , {} , {} , {} ,{}] ,
-    //     [{} , {} , {} , {} ,{}] ,
-    //     [{} , {} , {} , {} ,{}]  ];
-
+    let localdb = [];
     let rows = $(".row");
-    // 100 times
     for (let i = 0; i < rows.length; i++) {
       let row = [];
       let entries = $(rows[i]).find(".cell");
@@ -50,19 +108,18 @@ $(document).ready(function () {
           formula: "",
           parents: [],
           children: [],
-          fontStyle : {bold:false , underline:false , italic : false},
-          fontSize : "16",
-          cellTextColor : "black",
-          cellBackground : "lightgreen"
+          fontStyle: { bold: false, underline: false, italic: false },
+          fontSize: "16",
+          cellTextColor: "black",
+          cellBackground: "lightgreen",
         };
         row.push(cellObject);
         $(`.cell[rid = '${i}'][cid='${j}']`).html("");
         $(`.cell[rid = '${i}'][cid='${j}']`).removeAttr("style");
       }
-      db.push(row);
+      localdb.push(row);
     }
-    // allSheets.push(db);
-    // currentDb = db;
+    db = localdb;    
   });
   $(".open").on("click", function () {
     // read db
@@ -75,12 +132,30 @@ $(document).ready(function () {
       for (let j = 0; j < 26; j++) {
         let cellObject = db[i][j];
         $(`.cell[rid = '${i}'][cid='${j}']`).text(cellObject.value);
-        $(`.cell[rid = '${i}'][cid='${j}']`).css("font-style" , cellObject.fontStyle.italic ? "italic" : "normal" );
-        $(`.cell[rid = '${i}'][cid='${j}']`).css("font-weight" , cellObject.fontStyle.bold ? "bold" : "normal");
-        $(`.cell[rid = '${i}'][cid='${j}']`).css("text-decoration" , cellObject.fontStyle.underline ? "underline" : "none");
-        $(`.cell[rid = '${i}'][cid='${j}']`).css("font-size" , cellObject.fontSize+"px");
-        $(`.cell[rid = '${i}'][cid='${j}']`).css("color" , cellObject.cellTextColor);
-        $(`.cell[rid = '${i}'][cid='${j}']`).css("background" , cellObject.cellBackground);
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "font-style",
+          cellObject.fontStyle.italic ? "italic" : "normal"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "font-weight",
+          cellObject.fontStyle.bold ? "bold" : "normal"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "text-decoration",
+          cellObject.fontStyle.underline ? "underline" : "none"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "font-size",
+          cellObject.fontSize + "px"
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "color",
+          cellObject.cellTextColor
+        );
+        $(`.cell[rid = '${i}'][cid='${j}']`).css(
+          "background",
+          cellObject.cellBackground
+        );
       }
     }
     // update UI
@@ -118,68 +193,68 @@ $(document).ready(function () {
   //   })
 
   $(".bold").on("click", function () {
-      let address =  getAddress(lsc);
-      let {rowId , colId} = getRowIdColId(address);
-      let cellObject = db[rowId][colId];
+    let address = getAddress(lsc);
+    let { rowId, colId } = getRowIdColId(address);
+    let cellObject = db[rowId][colId];
     $(lsc).css("font-weight", cellObject.fontStyle.bold ? "normal" : "bold");
     cellObject.fontStyle.bold = !cellObject.fontStyle.bold;
   });
   $(".underline").on("click", function () {
-    let address =  getAddress(lsc);
-    let {rowId , colId} = getRowIdColId(address);
+    let address = getAddress(lsc);
+    let { rowId, colId } = getRowIdColId(address);
     let cellObject = db[rowId][colId];
-    $(lsc).css("text-decoration", cellObject.fontStyle.underline ? "none" : "underline");
+    $(lsc).css(
+      "text-decoration",
+      cellObject.fontStyle.underline ? "none" : "underline"
+    );
     cellObject.fontStyle.underline = !cellObject.fontStyle.underline;
-
   });
   $(".italic").on("click", function () {
-    let address =  getAddress(lsc);
-    let {rowId , colId} = getRowIdColId(address);
+    let address = getAddress(lsc);
+    let { rowId, colId } = getRowIdColId(address);
     let cellObject = db[rowId][colId];
     $(lsc).css("font-style", cellObject.fontStyle.italic ? "normal" : "italic");
     cellObject.fontStyle.italic = !cellObject.fontStyle.italic;
   });
 
-
   // font-size
-  $("#font-size").on("change" , function(){
-    let address =  getAddress(lsc);
-    let {rowId , colId} = getRowIdColId(address);
-    let cellObject = db[rowId][colId];  
+  $("#font-size").on("change", function () {
+    let address = getAddress(lsc);
+    let { rowId, colId } = getRowIdColId(address);
+    let cellObject = db[rowId][colId];
     let value = $(this).val();
-      $(lsc).css("font-size" , value+"px");
-      cellObject.fontSize = value;
-      // height
-      let height = $(lsc).height();
-      let rId = $(lsc).attr("rid");
-      let allLeftDivs = $(".left-col div");
-      $(allLeftDivs[rId]).height(height);
-  })
+    $(lsc).css("font-size", value + "px");
+    cellObject.fontSize = value;
+    // height
+    let height = $(lsc).height();
+    let rId = $(lsc).attr("rid");
+    let allLeftDivs = $(".left-col div");
+    $(allLeftDivs[rId]).height(height);
+  });
 
   // height set
-  $(".cell").on("keyup" , function(){
-      let height = $(this).height();
-      let rowId = $(this).attr("rid");
-      let allLeftDivs = $(".left-col div");
-      $(allLeftDivs[rowId]).height(height);
-  })
-
+  $(".cell").on("keyup", function () {
+    let height = $(this).height();
+    let rowId = $(this).attr("rid");
+    let allLeftDivs = $(".left-col div");
+    $(allLeftDivs[rowId]).height(height);
+  });
 
   // cell text color and cell color
-  $("#cell-text-color").on("change" , function(){
-    let address =  getAddress(lsc);
-    let {rowId , colId} = getRowIdColId(address);
-    let cellObject = db[rowId][colId];  
+  $("#cell-text-color").on("change", function () {
+    let address = getAddress(lsc);
+    let { rowId, colId } = getRowIdColId(address);
+    let cellObject = db[rowId][colId];
     let cellTextColor = $(this).val();
-    $(lsc).css("color" , cellTextColor);
+    $(lsc).css("color", cellTextColor);
     cellObject.cellTextColor = cellTextColor;
   });
-  $("#cell-color").on("change" , function(){
-    let address =  getAddress(lsc);
-    let {rowId , colId} = getRowIdColId(address);
-    let cellObject = db[rowId][colId];  
+  $("#cell-color").on("change", function () {
+    let address = getAddress(lsc);
+    let { rowId, colId } = getRowIdColId(address);
+    let cellObject = db[rowId][colId];
     let cellColor = $(this).val();
-    $(lsc).css("background" , cellColor);
+    $(lsc).css("background", cellColor);
     cellObject.cellBackground = cellColor;
   });
   // click event attached on .cell
@@ -335,7 +410,44 @@ $(document).ready(function () {
   }
 
   function init() {
-    $(".new").trigger("click");
+    // initialize empty db
+    let localdb = [];
+    // db=[
+    //     [{} , {} , {} , {} ,{}] ,
+    //     [{} , {} , {} , {} ,{}] ,
+    //     [{} , {} , {} , {} ,{}] ,
+    //     [{} , {} , {} , {} ,{}] ,
+    //     [{} , {} , {} , {} ,{}]  ];
+
+    let rows = $(".row");
+    // 100 times
+    for (let i = 0; i < rows.length; i++) {
+      let row = [];
+      let entries = $(rows[i]).find(".cell");
+      // 26 times
+      for (let j = 0; j < entries.length; j++) {
+        // i=0 ; j =0 => A1
+        let name = String.fromCharCode(65 + j) + Number(i + 1);
+        let cellObject = {
+          name: name,
+          value: "",
+          formula: "",
+          parents: [],
+          children: [],
+          fontStyle: { bold: false, underline: false, italic: false },
+          fontSize: "16",
+          cellTextColor: "black",
+          cellBackground: "lightgreen",
+        };
+        row.push(cellObject);
+        $(`.cell[rid = '${i}'][cid='${j}']`).html("");
+        // $(`.cell[rid = '${i}'][cid='${j}']`).removeAttr("style");
+      }
+      localdb.push(row);
+    }
+    allSheets.push(localdb);
+    db = localdb;
+    // $(".new").trigger("click");
   }
   init();
 

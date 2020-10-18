@@ -40,7 +40,8 @@ canvas.addEventListener("mousedown", function (e) {
       id : "md",
       x : x,
       y : y,
-      penColor: ctx.strokeStyle
+      penColor: ctx.strokeStyle,
+      penWidth : ctx.lineWidth
   }
   line.push(point);
 });
@@ -55,7 +56,8 @@ canvas.addEventListener("mousemove", function (e) {
         id : "mm",
         x : x,
         y : y,
-        penColor: ctx.strokeStyle
+        penColor: ctx.strokeStyle,
+        penWidth : ctx.lineWidth
     }
     line.push(point);
   }

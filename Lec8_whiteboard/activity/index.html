@@ -15,7 +15,7 @@
                 </div>
                 <div class="tool-options" id="pencil-options">
                     <div class="tool-size">
-                        <input type="range" id="pencil-size">
+                        <input type="range" id="pencil-size" value = "1" min = "1" max = "40">
                     </div>
                     <div class="tool-color">
                         <div class="red"></div>
@@ -31,11 +31,11 @@
                 </div>
                 <div class="tool-options" id="eraser-options">
                     <div class="tool-size">
-                        <input type="range" id="pencil-size">
+                        <input type="range" id="eraser-size" value = "1" min = "1" max = "40">
                     </div>
                 </div>
             </div>
-            <div class="tool">
+            <div class="tool" id="stickyAdd">
                 <div class="tool-img">
                     <img src="./resources-master/resources-master/NewIcons/StickyNote.svg" alt="">
                 </div>
@@ -43,6 +43,11 @@
             <div class="tool">
                 <div class="tool-img">
                     <img src="./resources-master/resources-master/NewIcons/Photo.svg" alt="">
+                </div>
+            </div>
+            <div class="tool">
+                <div class="tool-img">
+                    <img src="./resources-master/resources-master/NewIcons/Download.svg" alt="">
                 </div>
             </div>
             <div class="tool" id="undo">
@@ -61,8 +66,20 @@
     <div class="drawing-area">
         <canvas id="canvas"></canvas>
     </div>
+
+    <!-- <div class="stickyPad">
+        <div class="stickyNav">
+            <div class="minimize"></div>
+            <div class="close"></div>
+        </div>
+        <div class="content">
+            <textarea id="stickyText" cols="30" rows="10"></textarea>
+        </div>
+    </div> -->
+
     <!-- variable declared in script.js can be used in tools.js -->
     <script src="./script.js"></script> 
     <script src="./tools.js"></script>
+    <script src="./sticky.js"></script>
 </body>
 </html>

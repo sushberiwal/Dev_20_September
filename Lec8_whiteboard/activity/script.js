@@ -7,7 +7,10 @@ canvas.width = window.innerWidth;
 window.addEventListener("resize", function () {
   canvas.height = window.innerHeight-80;
   canvas.width = window.innerWidth;
+  redraw();
 });
+
+ctx.lineWidth = 5;
 
 //ctx.fillStyle = 'green';
 //x-axis , y-axis , length , breadth
@@ -21,11 +24,13 @@ window.addEventListener("resize", function () {
 // ctx.lineTo(100,50);
 // ctx.stroke();
 let points = [];
+let redoPoints = [];
 let isPenDown = false;
 let line = [];
 
 canvas.addEventListener("mousedown", function (e) {
   isPenDown = true;
+  redoPoints = [];
   let { top } = canvas.getBoundingClientRect();
   let x = e.clientX;
   let y = e.clientY - top;
@@ -34,7 +39,8 @@ canvas.addEventListener("mousedown", function (e) {
   let point = {
       id : "md",
       x : x,
-      y : y
+      y : y,
+      penColor: ctx.strokeStyle
   }
   line.push(point);
 });
@@ -48,7 +54,8 @@ canvas.addEventListener("mousemove", function (e) {
     let point = {
         id : "mm",
         x : x,
-        y : y
+        y : y,
+        penColor: ctx.strokeStyle
     }
     line.push(point);
   }
@@ -58,5 +65,4 @@ canvas.addEventListener("mouseup", function (e) {
   isPenDown = false;
   points.push(line);
   line = []; // new 
-
 });

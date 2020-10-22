@@ -22,7 +22,6 @@ function createWindow () {
   
     // and load the index.html of the app.
     win.loadFile('index.html').then(function(){
-        win.webContents.openDevTools();
         win.maximize();
         win.removeMenu();
     })

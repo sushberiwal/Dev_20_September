@@ -1,8 +1,8 @@
 let imgUpload = document.querySelector("#imgUpload");
-let imageLabel = document.querySelector("#image-label");
 
-imageLabel.addEventListener("click" , function(){
-    // console.log(imgUpload.files);
+
+imgUpload.addEventListener("change" , function(){
+  
       let src = URL.createObjectURL(imgUpload.files[0]);
       console.log(src);
       let img = document.createElement("img"); // <img src=""     />  

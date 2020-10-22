@@ -81,10 +81,29 @@
     </div> -->
 
     <!-- variable declared in script.js can be used in tools.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>
     <script src="./script.js"></script> 
     <script src="./tools.js"></script>
     <script src="./sticky.js"></script>
     <script src="./image.js"></script>
     <script src="./util.js"></script>
+    <script>
+     const socket = io.connect("http://localhost:3000");
+
+     socket.on("md" , function(point){
+         ctx.strokeStyle = point.penColor;
+         ctx.lineWidth = point.penWidth;
+         ctx.beginPath();
+         ctx.moveTo(point.x , point.y); 
+     })
+
+     socket.on("mm" , function(point){
+        ctx.strokeStyle = point.penColor;
+         ctx.lineWidth = point.penWidth;
+         ctx.lineTo(point.x , point.y);
+         ctx.stroke();
+     })
+   
+    </script>
 </body>
 </html>

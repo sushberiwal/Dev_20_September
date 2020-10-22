@@ -44,6 +44,7 @@ canvas.addEventListener("mousedown", function (e) {
       penWidth : ctx.lineWidth
   }
   line.push(point);
+  socket.emit("mousedown" , point);
 });
 canvas.addEventListener("mousemove", function (e) {
   if (isPenDown) {
@@ -60,6 +61,7 @@ canvas.addEventListener("mousemove", function (e) {
         penWidth : ctx.lineWidth
     }
     line.push(point);
+    socket.emit("mousemove" , point);
   }
 });
 

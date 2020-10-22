@@ -33,5 +33,37 @@ addSticky.addEventListener("click" , function(){
     closeBtn.addEventListener("click" , function(){
         stickyPad.remove();
     })
+
+    let isStickyHold = false;
+    let initialX;
+    let initialY;
+    stickyNav.addEventListener("mousedown" , function(e){
+        isStickyHold = true;
+        initialX = e.clientX;
+        initialY = e.clientY;
+    })
+
+    window.addEventListener("mousemove" , function(e){
+        if(isStickyHold){
+            let finalX = e.clientX;
+            let finalY = e.clientY;
+            let dx = finalX - initialX;
+            let dy = finalY - initialY;
+
+            stickyPad.style.top =  stickyPad.getBoundingClientRect().top + dy+"px";
+            stickyPad.style.left = stickyPad.getBoundingClientRect().left + dx + "px";
+
+            initialX = finalX;
+            initialY = finalY;
+        }
+    })
+
+    stickyNav.addEventListener("mouseup" , function(e){
+        isStickyHold = false;
+    })
+
+
+
+
 })
 

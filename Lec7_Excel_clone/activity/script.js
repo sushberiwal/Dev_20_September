@@ -12,8 +12,7 @@ $(document).ready(function () {
 
   
   // sheets add
-  $(".add-sheets").on("click" , function(){
-    
+  $(".add-sheets").on("click" , function(){    
     console.log("clicked on add sheets !");
     sheetNumber++;
     let li = document.createElement("li");

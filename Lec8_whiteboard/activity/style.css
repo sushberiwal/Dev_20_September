@@ -96,8 +96,8 @@ body {
 
 
 .stickyPad{
-  height: 185px;
-  width: 263px;
+  height: 235px;
+    width: 263px;
   position: absolute;
   top: 183px;
   left: 209px;
@@ -125,8 +125,14 @@ body {
   margin-right: 5px;
 }
 .content{
-
+  height: 200px;
+  width: 263px;
 }
 #stickyText{
   outline: none;
+}
+
+.img-upload{
+  height:100%;
+  width: 100%;
 }

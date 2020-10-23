@@ -5,7 +5,7 @@
 // create server
 
 const express = require("express");
-const users = require("./db/users.json");
+const userDB = require("./db/users.json");
 const fs = require("fs");
 const { v4: uuidv4 } = require('uuid');
 
@@ -23,8 +23,8 @@ app.post("/user" , function(req,res){
     let uid = uuidv4();
     let newUser = req.body;
     newUser.uid = uid;
-    users.push(newUser);
-    fs.writeFileSync("./db/users.json" , JSON.stringify(users));
+    userDB.push(newUser);
+    fs.writeFileSync("./db/userDB.json" , JSON.stringify(userDB));
     // send a response 
     res.json({
         message : "Added a user succesfully",
@@ -32,41 +32,58 @@ app.post("/user" , function(req,res){
     })
 })
 
-// get all users
+// get all userDB
 app.get("/user" , function(req , res){
-    if(users.length){
+    if(userDB.length){
         res.json({
-            message : "all users get succesfully",
-            data : users
+            message : "all userDB get succesfully",
+            data : userDB
         })
     }
     else{
         res.json({
-            message:"Users not found !!"
+            message:"userDB not found !!"
         })
     }
 });
 
 
 // get by id
-
+app.get("/user/:uid" , function(req,res){
+     let uid = req.params.uid;
+     let user = userDB.filter(  function(user){
+        return user.uid == uid;
+     });
+     // [  {}   ]
+     if(user.length){
+         res.json({
+             message:"user found",
+             data : user[0]
+         })
+     }
+     else{
+         res.json({
+             message:"User not found by id"
+         })
+     }
+})
 
 
 
 
 // update by id
+app.patch("/user" , function(req,res){
 
 
+})
 
 
 
 // delete by id
+app.delete("/user" , function(req,res){
 
 
-
-
-
-
+})
 
 
 

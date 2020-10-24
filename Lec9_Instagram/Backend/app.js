@@ -6,7 +6,6 @@
 
 const express = require("express");
 const fs = require("fs");
-const { createSecureServer } = require("http2");
 const { v4: uuidv4 } = require('uuid');
 const connection = require("./db/connection");
 
@@ -35,9 +34,7 @@ function createUser(newUser){
         let phone = newUser.phone;
         let isPublic = newUser.isPublic;
         // console.log(uid , name , handle , email , bio , phone , isPublic);
-        
         let sql = `INSERT INTO user_table(uid , name , handle , email , bio , phone , is_public) VALUES ( "${uid}" , "${name}" , "${handle}" , "${email}" , "${bio}" ,"${phone}" , ${isPublic}  )`;
-        
         connection.query( sql , function(error , data){
             if(error){
                 reject(error);
@@ -48,8 +45,6 @@ function createUser(newUser){
         })
     })
 }
-
-
 // create a user => details aayengi req.body
 app.post("/user" , async function(req,res){
     try{
@@ -74,43 +69,77 @@ app.post("/user" , async function(req,res){
 
 
 
-
-
+function getAllUsers(){
+    return new Promise( (resolve , reject) =>{
+        let sql = `SELECT * FROM user_table`;
+        connection.query(sql , function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    }  )
+}
 
 
 // get all userDB
-app.get("/user" , function(req , res){
-    if(userDB.length){
+app.get("/user" , async function(req , res){
+    try{
+        let data = await getAllUsers();
         res.json({
-            message : "all userDB get succesfully",
-            data : userDB
+            message:"got all users succesfully",
+            users : data
         })
     }
-    else{
+    catch(err){
         res.json({
-            message:"userDB not found !!"
+            message:"get all users failed !!",
+            error : err
         })
-    }
+    } 
 });
+
+
+
+
+
+function getUserById(uid){
+    return new Promise( (resolve , reject)=>{
+        let sql = `SELECT * FROM user_table WHERE uid = "${uid}" `;
+        connection.query(sql , function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+
+
+
 // get by id
-app.get("/user/:uid" , function(req,res){
-     let uid = req.params.uid;
-     let user = userDB.filter(  function(user){
-        return user.uid == uid;
-     });
-     // [  {}   ]
-     if(user.length){
-         res.json({
-             message:"user found",
-             data : user[0]
-         })
-     }
-     else{
-         res.json({
-             message:"User not found by id"
-         })
-     }
+app.get("/user/:uid" , async function(req,res){
+try{
+    let uid = req.params.uid;
+    let data = await getUserById(uid);
+    res.json({
+        message:"get user by id succesfully",
+        user : data[0]
+    })
+}
+catch(err){
+    res.json({
+        message:"Failed to get by id",
+        error : err
+    })
+}
 })
+
 // update by id
 app.patch("/user/:uid" , function(req,res){
 

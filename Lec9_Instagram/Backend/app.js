@@ -118,10 +118,6 @@ function getUserById(uid){
         })
     })
 }
-
-
-
-
 // get by id
 app.get("/user/:uid" , async function(req,res){
 try{
@@ -140,47 +136,87 @@ catch(err){
 }
 })
 
+
+
+
+function updateUserById(uid , updateObject){
+    return new Promise((resolve , reject)=>{
+// UPDATE user_table
+// SET 
+// name = "" , handle = "" , is_public = "" 
+// WHERE uid = "";
+      let sql = `UPDATE user_table SET`;
+      for(key in updateObject){
+          sql+= ` ${key} = "${updateObject[key]}" ,`;
+      }
+      sql = sql.slice(0 , -1);
+      sql += ` WHERE uid = "${uid}"`;
+      
+      connection.query(sql , function(error , data){
+          if(error){
+              reject(error);
+          }
+          else{
+              resolve(data);
+          }
+      })
+    })
+}
+
+
 // update by id
-app.patch("/user/:uid" , function(req,res){
-
-    let uid = req.params.uid;
-    let updateObject = req.body;
-
-    let userToBeUpdated = userDB.filter(function(user){
-        return user.uid == uid;
-    })
-
-    for(key in updateObject){
-        userToBeUpdated[0][key] = updateObject[key];
+app.patch("/user/:uid" , async function(req,res){
+    try{
+        let uid = req.params.uid;
+        let updateObject = req.body;
+        let data = await updateUserById(uid , updateObject);
+        res.json({
+            message:"USer updated succesfully",
+            data : data
+        })
     }
-    fs.writeFileSync("./db/users.json" , JSON.stringify(userDB));
-    res.json({
-        message:"User updated succesfully",
-        data : userToBeUpdated[0]
-    })
+    catch(err){
+        res.json({
+            message:"failed to update user",
+            error : err
+        })
+    }
 })
-// delete by id
-app.delete("/user/:uid" , function(req,res){ 
-    let uid = req.params.uid;
-    let userToBeDeleted = userDB.filter( function(user){
-        return user.uid == uid;
-    });
-    let filteredUsers = userDB.filter( function(user){
-        return user.uid != uid;
-    });
-    if(filteredUsers.length == userDB.length){
-        res.json({
-            message:"user not found !!"
-        })
-    }
-    else{
-        fs.writeFileSync("./db/users.json" , JSON.stringify(filteredUsers));
-        res.json({
-            message:"User deleted Succesfully",
-            data : userToBeDeleted[0]
-        })
-    }
 
+
+
+function deleteById(uid){
+    return new Promise((resolve , reject)=>{
+        let sql = `DELETE FROM user_table WHERE uid = "${uid}"`;
+        connection.query(sql , function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    })
+}
+
+// delete by id
+app.delete("/user/:uid" , async function(req,res){ 
+    try{
+        let uid = req.params.uid;
+        let data = await deleteById(uid);
+        res.json({
+            message:"user deleted succesfully",
+            data: data
+        })
+
+
+    }
+    catch(err){
+        res.json({
+            message:"Failed to delete user",
+            error : err
+        })
+    }
 })
 
 

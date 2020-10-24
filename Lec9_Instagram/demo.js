@@ -5,8 +5,8 @@
 // create server
 
 const express = require("express");
+const userDB = require("./db/users.json");
 const fs = require("fs");
-const { createSecureServer } = require("http2");
 const { v4: uuidv4 } = require('uuid');
 const connection = require("./db/connection");
 
@@ -24,60 +24,23 @@ app.use(express.json());
 
 
 
-function createUser(newUser){
-    return new Promise(  (resolve , reject) =>{
-        // insert details in table
-        let uid = newUser.uid;
-        let name = newUser.name;
-        let handle = newUser.handle;
-        let email = newUser.email;
-        let bio = newUser.bio;
-        let phone = newUser.phone;
-        let isPublic = newUser.isPublic;
-        // console.log(uid , name , handle , email , bio , phone , isPublic);
-        
-        let sql = `INSERT INTO user_table(uid , name , handle , email , bio , phone , is_public) VALUES ( "${uid}" , "${name}" , "${handle}" , "${email}" , "${bio}" ,"${phone}" , ${isPublic}  )`;
-        
-        connection.query( sql , function(error , data){
-            if(error){
-                reject(error);
-            }
-            else{
-                resolve(data);
-            }
-        })
-    })
-}
+
+// CRUD => create read update delete => user
 
 
 // create a user => details aayengi req.body
-app.post("/user" , async function(req,res){
-    try{
-        let uid = uuidv4();
-        let newUser = req.body;
-        newUser.uid = uid;
-        console.log(newUser);
-        let data =  await createUser(newUser);
-        res.json({
-            message:"user added succesfully",
-            data : data
-        })
-    }
-    catch(err){
-        res.json({
-            message:"user creation failed !!",
-            data : err
-        })
-    }
+app.post("/user" , function(req,res){
+    let uid = uuidv4();
+    let newUser = req.body;
+    newUser.uid = uid;
+    userDB.push(newUser);
+    fs.writeFileSync("./db/users.json" , JSON.stringify(userDB));
+    // send a response 
+    res.json({
+        message : "Added a user succesfully",
+        data : newUser
+    })
 })
-
-
-
-
-
-
-
-
 // get all userDB
 app.get("/user" , function(req , res){
     if(userDB.length){

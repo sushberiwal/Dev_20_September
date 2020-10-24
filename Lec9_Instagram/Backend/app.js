@@ -22,7 +22,7 @@ const app = express();
 app.use(express.json());
 
 
-
+// create a user => details aayengi req.body
 function createUser(newUser){
     return new Promise(  (resolve , reject) =>{
         // insert details in table
@@ -35,6 +35,7 @@ function createUser(newUser){
         let isPublic = newUser.isPublic;
         // console.log(uid , name , handle , email , bio , phone , isPublic);
         let sql = `INSERT INTO user_table(uid , name , handle , email , bio , phone , is_public) VALUES ( "${uid}" , "${name}" , "${handle}" , "${email}" , "${bio}" ,"${phone}" , ${isPublic}  )`;
+        // promise
         connection.query( sql , function(error , data){
             if(error){
                 reject(error);
@@ -45,14 +46,13 @@ function createUser(newUser){
         })
     })
 }
-// create a user => details aayengi req.body
 app.post("/user" , async function(req,res){
     try{
         let uid = uuidv4();
         let newUser = req.body;
         newUser.uid = uid;
         console.log(newUser);
-        let data =  await createUser(newUser);
+        let data =  await createUser(newUser); //pending promise => resolve
         res.json({
             message:"user added succesfully",
             data : data
@@ -66,9 +66,7 @@ app.post("/user" , async function(req,res){
     }
 })
 
-
-
-
+// get all userDB
 function getAllUsers(){
     return new Promise( (resolve , reject) =>{
         let sql = `SELECT * FROM user_table`;
@@ -82,9 +80,6 @@ function getAllUsers(){
         })
     }  )
 }
-
-
-// get all userDB
 app.get("/user" , async function(req , res){
     try{
         let data = await getAllUsers();
@@ -101,10 +96,7 @@ app.get("/user" , async function(req , res){
     } 
 });
 
-
-
-
-
+// get by id
 function getUserById(uid){
     return new Promise( (resolve , reject)=>{
         let sql = `SELECT * FROM user_table WHERE uid = "${uid}" `;
@@ -118,7 +110,6 @@ function getUserById(uid){
         })
     })
 }
-// get by id
 app.get("/user/:uid" , async function(req,res){
 try{
     let uid = req.params.uid;
@@ -136,9 +127,7 @@ catch(err){
 }
 })
 
-
-
-
+// update by id
 function updateUserById(uid , updateObject){
     return new Promise((resolve , reject)=>{
 // UPDATE user_table
@@ -162,9 +151,6 @@ function updateUserById(uid , updateObject){
       })
     })
 }
-
-
-// update by id
 app.patch("/user/:uid" , async function(req,res){
     try{
         let uid = req.params.uid;
@@ -183,8 +169,7 @@ app.patch("/user/:uid" , async function(req,res){
     }
 })
 
-
-
+// delete by id
 function deleteById(uid){
     return new Promise((resolve , reject)=>{
         let sql = `DELETE FROM user_table WHERE uid = "${uid}"`;
@@ -198,8 +183,6 @@ function deleteById(uid){
         })
     })
 }
-
-// delete by id
 app.delete("/user/:uid" , async function(req,res){ 
     try{
         let uid = req.params.uid;
@@ -221,7 +204,7 @@ app.delete("/user/:uid" , async function(req,res){
 
 
 
-
+//requests=>SEND REQUEST , ACCEPT REQUEST , SEE PENDING REQUEST , GET FOLLOWING , GET COUNT OF FOLLOWING , GET FOLLOWERS , GET COUNT OF FOLLOWERS
 
 app.listen(3000 , function(){
     console.log("server is listening at 3000 port !!");

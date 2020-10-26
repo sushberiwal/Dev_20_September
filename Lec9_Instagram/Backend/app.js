@@ -206,6 +206,74 @@ app.delete("/user/:uid" , async function(req,res){
 
 //requests=>SEND REQUEST , ACCEPT REQUEST , SEE PENDING REQUEST , GET FOLLOWING , GET COUNT OF FOLLOWING , GET FOLLOWERS , GET COUNT OF FOLLOWERS
 
+function addInFollowingTable( isPublic , uid , followId){
+    return new Promise(  (resolve , reject)=>{
+        let sql = `INSERT INTO user_following(uid , follow_id , is_accepted ) VALUES ( "${uid}" , "${followId}" , ${isPublic} )`;
+        connection.query(sql , function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    });
+}
+
+
+function addInFollowerTable(uid , followerId){
+    return new Promise(  (resolve , reject)=>{
+        let sql = `INSERT INTO user_follower(uid , follower_id) VALUES ( "${uid}" , "${followerId}" )`;
+        connection.query(sql , function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    });
+}
+
+
+
+
+app.post("/user/request" ,async function(req , res){
+    try{
+        // object destructuring
+        let { uid , follow_id } = req.body;
+        let user = await getUserById(follow_id);
+        let isPublic = user[0].is_public;
+        // falsy values => undefined , 0 , false , null , ""
+        if(isPublic){
+           let followingData = await addInFollowingTable( true , uid , follow_id);
+           let followerData = await addInFollowerTable(follow_id , uid );
+           res.json({
+               message:"Request Sent and accepted !!",
+               data : {followerData , followingData}
+           })
+        }
+        else{
+            let data = await addInFollowingTable( false , uid  , follow_id);
+            res.json({
+                message:"Request sent and pending !!!",
+                data : data
+            })
+        }
+    }
+    catch(error){
+        res.json({
+            message:"Failed to send request",
+            error : error
+        })
+    }
+})
+
+
+
+
+
+
 app.listen(3000 , function(){
     console.log("server is listening at 3000 port !!");
 })

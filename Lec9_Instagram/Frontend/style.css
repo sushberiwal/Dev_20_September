@@ -1,0 +1,30 @@
+.profile{
+background: lightcyan;
+}
+
+.profile-data{
+
+}
+
+.profile-img{
+
+}
+
+.profile-img img{
+    
+}
+
+.profile-stats{
+display: flex;
+justify-content: space-around;
+}
+
+.searchBox{
+    display: flex;
+}
+
+.search{
+    background: red;
+    color: white;
+    margin-left: 10px;
+}

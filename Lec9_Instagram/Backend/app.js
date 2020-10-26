@@ -8,7 +8,7 @@ const express = require("express");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const connection = require("./db/connection");
-
+const cors = require("cors");
 // express => to create server easily
 
 // server is creeated
@@ -16,6 +16,8 @@ const app = express();
 
 // if you want to see data in req.body
 app.use(express.json());
+app.use(cors());
+
 
 // create a user => details aayengi req.body
 function createUser(newUser) {
@@ -200,7 +202,6 @@ function addInFollowingTable(isPublic, uid, followId) {
     });
   });
 }
-
 function addInFollowerTable(uid, followerId) {
   return new Promise((resolve, reject) => {
     let sql = `INSERT INTO user_follower(uid , follower_id) VALUES ( "${uid}" , "${followerId}" )`;
@@ -213,7 +214,6 @@ function addInFollowerTable(uid, followerId) {
     });
   });
 }
-
 app.post("/user/request", async function (req, res) {
   try {
     // object destructuring
@@ -346,6 +346,132 @@ app.get("/user/request/:uid" , async function(req , res){
         })
     }
 })
+
+
+// unfollow
+function removeFromFollowing(uid , followId){
+    return new Promise((resolve , reject)=>{
+        let sql = `DELETE FROM user_following WHERE uid = "${uid}" AND follow_id="${followId}"`;
+        connection.query(sql ,function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    })
+}
+function removeFromFollower(uid , followerId){
+    return new Promise((resolve , reject)=>{
+        let sql = `DELETE FROM user_follower WHERE uid = "${uid}" AND follower_id="${followerId}"`;
+        connection.query(sql ,function(error , data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    })
+}
+app.post("/user/request/unfollow", async function (req, res) {
+    try {
+      // object destructuring
+      let { uid, follow_id } = req.body;
+      let followingData = await removeFromFollowing(uid , follow_id);
+      let followerData =  await removeFromFollower(follow_id , uid);
+      res.json({
+          message:"removed following succesfully",
+          data : {followerData , followingData}
+      })
+    } catch (error) {
+      res.json({
+        message: "Failed to unfollow",
+        error: error,
+      });
+    }
+  });
+
+  
+// get following
+function getFollowingIds(uid){
+    return new Promise((resolve , reject)=>{
+        let sql = `SELECT follow_id FROM user_following WHERE uid = "${uid}" AND is_accepted = true`;
+        connection.query(sql , function(error ,data){
+            if(error){
+                reject(error);
+            }
+            else{
+                resolve(data);
+            }
+        })
+    })
+}
+app.get("/user/following/:uid" , async function(req , res){
+    try{
+        let {uid} = req.params;
+        let followingIds = await getFollowingIds(uid);
+        // console.log(followingIds);
+        let followingUsers = [];
+        for(let i=0 ; i<followingIds.length ; i++){
+            let followId = followingIds[i].follow_id;
+            let user = await getUserById(followId);
+            followingUsers.push(user[0]);
+        }
+        // console.log(followingUsers);
+        res.json({
+            message:"got all following",
+            data : followingUsers
+        })
+    }
+    catch(error){
+        res.json({
+            message:"failed to get following !",
+            error:error
+        })
+    }
+})
+
+
+// get followers
+function getFollowersId(uid){
+      return new Promise((resolve , reject)=>{
+          let sql = `SELECT follower_id FROM user_follower WHERE uid = "${uid}"`;
+          connection.query(sql , function(error ,data){
+              if(error){
+                  reject(error);
+              }
+              else{
+                  resolve(data);
+              }
+          }) 
+      })
+}
+app.get("/user/follower/:uid" , async function(req , res){
+    try{
+        let {uid }= req.params;
+        let followerIds  = await getFollowersId(uid);
+        console.log(followerIds);
+        let followerUsers = [];
+        for(let i=0 ; i<followerIds.length ; i++){
+            let followerId = followerIds[i].follower_id;
+            let user = await getUserById(followerId);
+            followerUsers.push(user[0]);
+        }
+        res.json({
+            message:"got all followers succesfully",
+            data: followerUsers 
+        })
+    }
+    catch(error){
+        res.json({
+            message:"Failed to get all followers !!",
+            error : error
+        })
+    }
+})
+
 
 
 app.listen(3000, function () {

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- react logic -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+     <!-- platform independent code -->
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <!-- babel -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+
+        // basic code of react
+        // what to render and where to render
+        // jsx => javascript xml => syntactic sugar
+        // jsx converrt into js
+
+        // components => stateless functional components and class based components => stateful
+        
+        // sfc => stateless functional component => Capital se start
+        function Hello(){
+            return(<React.Fragment> <h1>Hello from Hello component!!</h1></React.Fragment>)
+        }
+
+        function HelloParent(){
+            return(
+                <React.Fragment>
+                <Hello> </Hello>
+                <Hello> </Hello>
+                <Hello> </Hello>
+                <Hello> </Hello>
+                <Hello> </Hello>
+                <Hello> </Hello>
+                </React.Fragment>
+            )
+        }
+
+
+        ReactDOM.render( <HelloParent></HelloParent> , document.getElementById('root'));
+    </script>
+</body>
+</html>

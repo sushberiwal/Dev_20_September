@@ -16,6 +16,8 @@ const app = express();
 
 // if you want to see data in req.body
 app.use(express.json());
+
+
 app.use(cors());
 
 

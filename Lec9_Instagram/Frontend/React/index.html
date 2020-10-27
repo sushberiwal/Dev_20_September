@@ -27,9 +27,10 @@
 
         // sfc => stateless functional component => Capital se start
         function Hello(props){
-            let {name , age }= props;
-            return(<h1>Hello from {name} {age}</h1>)
+            let {name}= props;
+            return(<h1>Hello from {name}</h1>)
         }
+        
         function HelloParent(){
             return(
                 <React.Fragment>

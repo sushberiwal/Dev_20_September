@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+     <!-- react logic -->
+     <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+     <!-- platform independent code -->
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <!-- babel -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type = "text/babel">
+
+    //sfc => stateless => useState();
+    // cc => class components
+
+    // lifecycle methods
+    class Counter extends React.Component{
+
+        // 1.constructor
+        constructor(){
+            super();
+            this.state = {
+                count : 0
+            }
+        }
+
+        // jb bhi setState chlega => render();
+        increment = ()=>{
+            // console.log("add clicked");
+            this.setState({
+                count : this.state.count + 1
+            })
+        }
+
+        decrement = () =>{
+            // console.log("minus clicked !!");
+            this.setState({
+                count : this.state.count - 1
+            })
+        }
+
+        reset = () =>{
+            this.setState({
+                count:0
+            })
+        }
+
+//2.render
+        render(){
+            let count = this.state.count;
+
+        return(
+            <React.Fragment>
+                <div className="counter container">
+                    <div className="count m-3">
+                        <div className="badge badge-pill badge-dark"> {count} </div>
+                    </div>
+                    <div className="actions">
+                        <div className="btn btn-primary m-2" onClick= {this.increment} >+</div>
+                        <div className="btn btn-danger m-2" onClick = {this.decrement}>-</div>  
+                        <div className="btn btn-warning m-2" onClick = {this.reset} >Reset</div>
+                        </div>
+                    </div>
+                
+                </React.Fragment>
+        )
+        }
+
+    }
+
+       ReactDOM.render(<Counter> </Counter>  , document.getElementById("root"));
+    </script>
+    
+</body>
+</html>

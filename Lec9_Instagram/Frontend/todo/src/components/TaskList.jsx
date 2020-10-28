@@ -4,21 +4,23 @@ import Task from "./Task";
 // constructor no need
 
 class TaskList extends Component {
-  state = {
-    tasks: [
-      { id: 1, task: "Learn ES6" },
-      { id: 2, task: "Learn React" },
-      { id: 3, task: "Learn NodeJS" },
-      { id: 4, task: "Learn WebD" },
-      { id: 5, task: "Learn BackEnd" },
-    ],
-  };
+  state = {};
+
   render() {
-    let tasks = this.state.tasks;
+    let tasks = this.props.tasks;
+    let deleteTask = this.props.handleDelete;
+    // tasks , delete functions
+
     return (
       <React.Fragment>
         {tasks.map((taskObj) => {
-          return <Task key={taskObj.id} newtasks={taskObj.task} />;
+          return (
+            <Task
+              key={taskObj.id}
+              newtasks={taskObj}
+              handleDeleteTask={deleteTask}
+            />
+          );
         })}
       </React.Fragment>
     );

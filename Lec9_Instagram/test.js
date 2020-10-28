@@ -1,15 +1,5 @@
+let items = ["hello" , "bye" , "sayHI"];
 
 
-
-let name = "abcd";
-let fullname = "ajsdak";
-
-
-
-
-
-// module.exports = name;
-
-
-module.exports.a = name;
-module.exports.b = fullname
+let newItems = [...items , "new Name"];
+console.log(newItems);

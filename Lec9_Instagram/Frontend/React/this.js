@@ -22,10 +22,19 @@ let obj = {
 // method call via object;
 // obj.sayHi();
 // arrow functions
+
 outer = () => {
    console.log(this);
 }
 outer();
+
+
+function fun(){
+    console.log(this);
+}
+fun();
+
+
 
 
 // simple function call => this will be global object

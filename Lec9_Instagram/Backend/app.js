@@ -12,31 +12,50 @@ const cors = require("cors");
 // express => to create server easily
 // image upload
 const multer  = require('multer')
+// server is creeated
+const app = express();
+// if you want to see data in req.body
+app.use(express.json());
+app.use(cors());
+// application => localhost => 3001 , backend localhost :3000
+app.use(express.static('public'));
+
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/user')
+    if(file.fieldname == "postImage"){
+      cb(null , 'public/posts')
+    }
+    else{
+      cb(null, 'public/user');
+    }
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now()+".jpg");
   }
 })
-const upload = multer({ storage: storage })
+
+
+function fileFilter (req, file, cb) {
+  // The function should call `cb` with a boolean
+  // to indicate if the file should be accepted
+ let mimetype = file.mimetype;
+ // // To accept the file pass `true`, like so:
+ if(mimetype.includes("image")){
+   cb(null, true);
+ }
+ // // To reject this file pass `false`, like so:
+ else{
+   cb(new Error('Selected file is not an Image !!!'), false)
+ }
+}
+
+
+
+const upload = multer({ storage: storage,fileFilter : fileFilter })
 
  
-
-
-
-
-
-// server is creeated
-const app = express();
-
-// if you want to see data in req.body
-app.use(express.json());
-
-
-app.use(cors());
 
 
 // create a user => details aayengi req.body
@@ -500,6 +519,52 @@ app.get("/user/follower/:uid" , async function(req , res){
         })
     }
 })
+
+
+// POSTS => create a post , get post by id , get all posts , update a post , delete a post
+
+function createPost(postObject){
+  return new Promise((resolve , reject)=>{
+    let {pid , uid , postImage , caption } = postObject;
+
+    const date = new Date();
+    let createdAt = date.toISOString().slice(0,19).replace('T',' ');
+    postObject.createdAt = createdAt;
+    let sql = `INSERT INTO post (pid , uid , postImage , caption , createdAt ) VALUES('${pid}' , '${uid}' , '${postImage}' , '${caption}' , '${createdAt}')`;
+    connection.query(sql , function(error , data){
+      if(error){
+        reject(error);
+      }
+      else{
+        resolve(data);
+      }
+    })
+  })
+}
+app.post("/post" , upload.single("postImage") ,async function(req , res){
+  try{
+    let pid = uuidv4();
+    let postObject = req.body;
+    postObject.pid = pid;
+    let postImage = "/posts/"+req.file.filename;
+    postObject.postImage = postImage;
+    console.log(postObject);
+    let postData = await createPost(postObject);
+    res.json({
+      message:"post created succesfully",
+      data: postData
+    })
+  }
+  catch(error){
+    res.json({
+      message:"Failed to create post !!",
+      error : error
+    })
+  }
+})
+
+
+// suggestions => 
 
 
 

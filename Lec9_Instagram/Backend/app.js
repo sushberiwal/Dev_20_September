@@ -10,6 +10,24 @@ const { v4: uuidv4 } = require("uuid");
 const connection = require("./db/connection");
 const cors = require("cors");
 // express => to create server easily
+// image upload
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/user')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now()+".jpg");
+  }
+})
+const upload = multer({ storage: storage })
+
+ 
+
+
+
+
 
 // server is creeated
 const app = express();
@@ -32,8 +50,9 @@ function createUser(newUser) {
     let bio = newUser.bio;
     let phone = newUser.phone;
     let isPublic = newUser.isPublic;
+    let pImage = newUser.pImage;
     // console.log(uid , name , handle , email , bio , phone , isPublic);
-    let sql = `INSERT INTO user_table(uid , name , handle , email , bio , phone , is_public) VALUES ( "${uid}" , "${name}" , "${handle}" , "${email}" , "${bio}" ,"${phone}" , ${isPublic}  )`;
+    let sql = `INSERT INTO user_table(uid , name , handle , email , bio , phone , is_public , pImage) VALUES ( "${uid}" , "${name}" , "${handle}" , "${email}" , "${bio}" ,"${phone}" , ${isPublic} , '${pImage}' )`;
     // promise
     connection.query(sql, function (error, data) {
       if (error) {
@@ -44,11 +63,13 @@ function createUser(newUser) {
     });
   });
 }
-app.post("/user", async function (req, res) {
+app.post("/user", upload.single('photo') , async function (req, res) {
   try {
     let uid = uuidv4();
     let newUser = req.body;
     newUser.uid = uid;
+    let pImage = "/user/"+req.file.filename;
+    newUser.pImage = pImage;
     console.log(newUser);
     let data = await createUser(newUser); //pending promise => resolve
     res.json({
@@ -134,6 +155,8 @@ function updateUserById(uid, updateObject) {
     sql = sql.slice(0, -1);
     sql += ` WHERE uid = "${uid}"`;
 
+    console.log(sql);
+
     connection.query(sql, function (error, data) {
       if (error) {
         reject(error);
@@ -143,10 +166,13 @@ function updateUserById(uid, updateObject) {
     });
   });
 }
-app.patch("/user/:uid", async function (req, res) {
+app.patch("/user/:uid", upload.single('photo') ,async function (req, res) {
   try {
     let uid = req.params.uid;
     let updateObject = req.body;
+    let pImage = "/user/"+req.file.filename;
+    updateObject.pImage = pImage;
+    console.log(updateObject);
     let data = await updateUserById(uid, updateObject);
     res.json({
       message: "USer updated succesfully",
@@ -475,34 +501,16 @@ app.get("/user/follower/:uid" , async function(req , res){
     }
 })
 
-// image upload
-
-const multer  = require('multer')
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now()+".jpg");
-  }
-})
-const upload = multer({ storage: storage })
-
- 
 
 
-app.post("/image" , upload.single('photo') ,   function(req , res){
-
-  console.log(req.body); // text data in req.body
-  console.log(req.file); // image in req.file
-  console.log(req.files); // multiple images comes in req.files
-
-
-  res.json({
-    message:"received image succesfully"
-  })
-})
+// app.post("/image" , upload.single('photo') ,   function(req , res){
+//   console.log(req.body); // text data in req.body
+//   console.log(req.file); // image in req.file
+//   console.log(req.files); // multiple images comes in req.files
+//   res.json({
+//     message:"received image succesfully"
+//   })
+// })
 
 
 

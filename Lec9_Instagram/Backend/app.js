@@ -450,6 +450,7 @@ function getFollowersId(uid){
           }) 
       })
 }
+
 app.get("/user/follower/:uid" , async function(req , res){
     try{
         let {uid }= req.params;
@@ -473,6 +474,40 @@ app.get("/user/follower/:uid" , async function(req , res){
         })
     }
 })
+
+// image upload
+
+const multer  = require('multer')
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now()+".jpg");
+  }
+})
+const upload = multer({ storage: storage })
+
+ 
+
+
+app.post("/image" , upload.single('photo') ,   function(req , res){
+
+  console.log(req.body); // text data in req.body
+  console.log(req.file); // image in req.file
+  console.log(req.files); // multiple images comes in req.files
+
+
+  res.json({
+    message:"received image succesfully"
+  })
+})
+
+
+
+
+
 
 
 

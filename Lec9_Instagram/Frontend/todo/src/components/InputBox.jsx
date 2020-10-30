@@ -6,7 +6,7 @@ class InputBox extends Component {
         task : ""
      }
 
-
+     
      handleOnChange = (e) =>{
          let value = e.target.value;
          console.log(value);

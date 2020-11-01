@@ -520,15 +520,27 @@ app.get("/user/follower/:uid" , async function(req , res){
     }
 })
 
+// frontend => package.json => "proxy" => "http://localhost:3000"
 
-// POSTS => create a post , get post by id , get all posts , update a post , delete a post
+// user => create a user , get user by id , get all users , update a user , delete a user
+
+// sql => post table => pid  , uid , caption , postImage , createAt =>
+// POSTS => create a post , get post by uid , get all posts , update a post , delete a post pid
+
+
+// ui component => POSTS => state => postlist => componeent did mount => get all posts => postList = [ {} , {} , {} ]; 
+// Post component => 
+
 
 function createPost(postObject){
   return new Promise((resolve , reject)=>{
+    
     let {pid , uid , postImage , caption } = postObject;
 
     const date = new Date();
+    console.log(date);
     let createdAt = date.toISOString().slice(0,19).replace('T',' ');
+    console.log(createdAt);
     postObject.createdAt = createdAt;
     let sql = `INSERT INTO post (pid , uid , postImage , caption , createdAt ) VALUES('${pid}' , '${uid}' , '${postImage}' , '${caption}' , '${createdAt}')`;
     connection.query(sql , function(error , data){
@@ -541,12 +553,15 @@ function createPost(postObject){
     })
   })
 }
-app.post("/post" , upload.single("postImage") ,async function(req , res){
+// app.post method => /post
+app.post("/post" , upload.single("postImage") , async function(req , res){
   try{
-    let pid = uuidv4();
+    let pid = uuidv4(); // unique post id
     let postObject = req.body;
     postObject.pid = pid;
-    let postImage = "/posts/"+req.file.filename;
+
+    let postImage = "/posts/"+ req.file.filename;
+    // console.log(req.file);
     postObject.postImage = postImage;
     console.log(postObject);
     let postData = await createPost(postObject);
@@ -562,6 +577,135 @@ app.post("/post" , upload.single("postImage") ,async function(req , res){
     })
   }
 })
+
+
+// get all posts 
+function getAllPosts(){
+  return new Promise((resolve , reject)=>{
+    let sql = `SELECT * FROM post ORDER BY createdAt DESC`;
+    connection.query(sql , function(error , data){
+      if(error){
+        reject(error);
+      }
+      else{
+        resolve(data);
+      }
+    })
+  })
+}
+app.get("/post" , async function(req , res){
+  try{
+    let postData = await getAllPosts();
+    res.json({
+      message:"Succesfully got all posts !!",
+      data : postData
+    })
+  }
+  catch(error){
+    res.json({
+      message:"failed to get all posts",
+      error:error
+
+    })
+  }
+})
+
+// get post by id
+function getPostById(uid){
+  return new Promise((resolve , reject)=>{
+    let sql = `SELECT * FROM post WHERE uid = "${uid}" ORDER BY createdAt DESC`;
+    connection.query(sql , function(error , data){
+      if(error){
+        reject(error);
+      }
+      else{
+        resolve(data);
+      }
+    })
+  })
+}
+app.get("/post/:uid" , async function(req,res){
+  try{
+    let {uid} = req.params;
+    let postData = await getPostById(uid);
+    res.json({
+      message:"succesfully get all post by id",
+      data : postData
+    })
+  }
+  catch(error){
+    res.json({
+      message:"Failed tp get post by id",
+      error:error
+    })
+  }
+})
+
+// update a post
+function updateCaption(pid , caption){
+  return new Promise((resolve , reject)=>{
+    let sql = `UPDATE post SET caption = "${caption}" WHERE pid = "${pid}"`;
+    connection.query(sql , function(error , data){
+      if(error){
+        reject(error);
+      }
+      else{
+        resolve(data);
+      }
+    })
+  })
+}
+app.patch("/post" , async function(req,res){
+  try{
+    let {pid,caption} = req.body;
+    let updateData =await updateCaption(pid , caption);
+    res.json({
+      message:"caption updated",
+      data:updateData
+    })
+
+  }
+  catch(error){
+    res.json({
+      message:"failed to update caption",
+      error:error
+    })
+  }
+})
+
+// delete a post
+function deletePostById(pid){
+  return new Promise((resolve , reject)=>{
+    let sql = `DELETE FROM post WHERE pid = "${pid}"`;
+    connection.query(sql , function(error, data){
+      if(error){
+        reject(error);
+      }
+      else{
+        resolve(data);
+      }
+    })
+  })
+}
+app.delete("/post/:pid" , async function(req,res){
+  try{
+    let {pid} =req.params; 
+    let deleteData = await deletePostById(pid);
+    res.json({
+      message:"deleted succesfully",
+      data : deleteData
+    })
+  }
+  catch(error){
+    res.json({
+      message:"failed to delete post !!",
+      error : error
+    })
+  }
+})
+
+
+
 
 
 // suggestions => 

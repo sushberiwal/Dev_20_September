@@ -5,16 +5,23 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20");
 const connection = require("./connection");
 const cookieSession = require("cookie-session");
-
+const secrets = require("./secrets.json");
 // ejs => templating engine => ek template(home.ejs ,  profile.ejs  , homepage.ejs)
 // passport => to handle authentication functions
+
+
+// backend => connect to react UI
+// backend => localhost 4000
+// frontend => localhost 3000
+// google consent form localhost 4000  , localhost 3000
+// React poc 
 
 const app = express();
 
 app.use(
     cookieSession({
         maxAge:24*60*60*1000,
-        keys:["akjsbdajsbahbjadsb"]
+        keys:  secrets.keys // id:123412431234 // cookie ssid : kjasfhkj212o831922bkjabsfjk19823rh
     })
 )
 
@@ -65,6 +72,9 @@ passport.deserializeUser( (id , done)=>{
         console.log(userData);
         done(null , userData[0]);
     })
+    .catch(function(error){
+        done(error);
+    })
 })
 
 
@@ -74,10 +84,9 @@ app.use(passport.session());
 passport.use(
   new GoogleStrategy(
     {
-      clientID:
-        "886797572833-87ar3vp4n9s5gtom9eetsqt16jlporug.apps.googleusercontent.com",
-      clientSecret: "TdiJGNh70nVUogSs8pRkUXuA",
-      callbackURL: "/auth/callback",
+      clientID: secrets.clientID ,
+      clientSecret: secrets.clientSecret,
+      callbackURL:secrets.callbackURL,
     },
     async (accessToken, refreshToken, profile, done) => {
       console.log("passport callback function called !!!");
@@ -147,8 +156,11 @@ app.get("/auth/callback", passport.authenticate("google") , (req, res) => {
   // profile page pe leke jao
 });
 
-app.get("/logout", (req, res) => {
+app.get("/logout", (req, res) => {    
     req.logout();
+    res.status(200).clearCookie('connect.sid', {
+        path: '/'
+      });
     res.redirect("/");
 });
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <div class="navlinks">
+        <ul>
+            <% if(user){%>
+                <li><a href="/logout">Logout</a></li>
+                <%}else{%>
+                    <li><a href="/">Login</a></li>
+                    <%}%>
+            <li><a href="/home">Home</a></li>
+            <li><a href="/profile">Profile</a></li>
+        </ul>
+    </div>
+    <h1>Welcome to Login Page</h1>
+    <button> <a href="/auth/google">Sign in with google+</a>  </button>
+</body>
+</html>

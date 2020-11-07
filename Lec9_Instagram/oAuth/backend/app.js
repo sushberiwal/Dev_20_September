@@ -132,36 +132,55 @@ function authChecker(req, res , next){
 
 
 app.get("/" , (req, res) => {
-  res.render("login", {user : req.user});
+//   res.render("login", {user : req.user});
 });
 
 app.get("/home", authChecker , (req, res) => {
-  res.render("home" , {user : req.user});
+//   res.render("home" , {user : req.user});
 });
 
 app.get("/profile", authChecker , (req, res) => {
-  res.render("profile" , {user : req.user}  );
+//   res.render("profile" , {user : req.user}  );
 });
 
 // path which takes user to google consent screen
-app.get(
-  "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+app.get("/auth/google",passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 // redirect callback path // middleware => user is emebedded in req.user;
 app.get("/auth/callback", passport.authenticate("google") , (req, res) => {
-  console.log("inside callback url");
-  res.redirect("/profile");
+  
+    console.log("inside callback url");
+    res.redirect("http://localhost:3000/");
   // profile page pe leke jao
 });
 
-app.get("/logout", (req, res) => {    
+app.get("/auth/checkAuth" , (req , res)=>{
+    // req.user
+    if(req.user){
+        res.json({
+            isAuth : true
+        })
+    }
+    else{
+        res.json({
+            isAuth : false
+        })
+    }
+})
+
+// profile view , profile 
+app.get("/auth/user" , (req,res)=>{
+    res.json({
+        user : req.user.gId
+    })
+})
+
+app.get("/auth/logout", (req, res) => {    
     req.logout();
-    res.status(200).clearCookie('connect.sid', {
-        path: '/'
-      });
-    res.redirect("/");
+    // res.redirect("/");
+    // req.user becomes undefined if req.logout is called
+    res.end();
 });
 
 app.listen(4000, () => {
